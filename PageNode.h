@@ -8,7 +8,7 @@
 
 class PageNode {
 public:
-    PageNode() {this->m_PageID = 0;}
+    PageNode();
     PageNode(int pageID);
     int getPageID();
 

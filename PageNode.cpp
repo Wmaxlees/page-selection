@@ -4,7 +4,13 @@
 
 #include "PageNode.h"
 
+PageNode::PageNode() {
+    this->m_LastCalled = 0;
+    this->m_PageID = 0;
+}
+
 PageNode::PageNode(int pageID) {
+    this->m_LastCalled = 0;
     this->m_PageID = pageID;
 }
 

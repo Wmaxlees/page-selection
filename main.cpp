@@ -5,6 +5,7 @@
 #include "PageArray.h"
 #include "Frames.h"
 #include "FIFOFrames.h"
+#include "LRUFrames.h"
 
 using namespace std;
 
@@ -66,9 +67,35 @@ int main(int argc, char** argv) {
         ++fifoPageRequests;
     }
 
+    // Clean up
+    delete frames;
+    mainArray.reset();
+
+    // Run LRU
+    frames = new LRUFrames(frameSize);
+    int lruPageFaults = 0;
+    int lruPageRequests = 0;
+    int runtime;
+    for (int i = 0; i < mainArray.getSize(); ++i) {
+        // Set runtime
+        PageNode node = mainArray.getNextPage();
+        node.setLastCalled(runtime++);
+
+        // Add the frame
+        if (frames->add(node)) {
+            ++lruPageFaults;
+        }
+
+        std::cout << *frames << std::endl;
+
+        ++lruPageRequests;
+    }
+    delete frames;
+
     std::cout << "FIFO Page Faults: " << fifoPageFaults << std::endl;
     std::cout << "FIFO Page Requests: " << fifoPageRequests << std::endl;
-
+    std::cout << "LRU Page Faults: " << lruPageFaults << std::endl;
+    std::cout << "LRU Page Requests: " << lruPageRequests << std::endl;
 
     return 0;
 }

@@ -15,6 +15,10 @@ PageArray::~PageArray() {
     delete [] this->m_pPages;
 }
 
+void PageArray::reset() {
+    this->m_Current = 0;
+}
+
 void PageArray::addPage(PageNode node) {
     if (this->m_Size < this->m_Capacity) {
         this->m_pPages[this->m_Size++] = node;

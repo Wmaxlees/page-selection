@@ -15,6 +15,8 @@ public:
     void addPage(PageNode node);
     PageNode getNextPage();
 
+    void reset();
+
     int getSize() { return this->m_Size; }
 
 private:

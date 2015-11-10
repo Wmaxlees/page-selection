@@ -1,15 +1,12 @@
 //
-// Created by William Lees on 11/9/15.
+// Created by William Lees on 11/10/15.
 //
 
-#include "FIFOFrames.h"
+#include "LRUFrames.h"
 
-FIFOFrames::FIFOFrames(int capacity) : Frames(capacity) {
-    this->m_LastFrame = -1;
-}
+LRUFrames::LRUFrames(int capacity) : Frames(capacity) {}
 
-// Returns true if there was a page fault
-bool FIFOFrames::add(PageNode node) {
+bool LRUFrames::add(PageNode node) {
     // Check if we have an open frame or the page is already loaded
     for (int i = 0; i < this->m_Capacity; ++i) {
         if (this->m_pFrames[i].getPageID() == node.getPageID()) {
@@ -26,7 +23,12 @@ bool FIFOFrames::add(PageNode node) {
     }
 
     // If code gets here, a replacement needs to take place
-    this->m_LastFrame = (this->m_LastFrame + 1) % this->m_Capacity;
-    this->m_pFrames[this->m_LastFrame] = node;
+    int index = 0;
+    for (int i = 1; i < this->m_Capacity; ++i) {
+        if (this->m_pFrames[i].getLastCalled() < this->m_pFrames[index].getLastCalled()) {
+            index = i;
+        }
+    }
+    this->m_pFrames[index] = node;
     return true;
 }
