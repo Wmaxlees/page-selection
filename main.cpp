@@ -6,6 +6,7 @@
 #include "Frames.h"
 #include "FIFOFrames.h"
 #include "LRUFrames.h"
+#include "OptimalFrames.h"
 
 using namespace std;
 
@@ -31,9 +32,10 @@ int main(int argc, char** argv) {
     // Read the file in
     std::ifstream file(argv[2], std::ios_base::in);
     int id;
-    int inCount;
+    int inCount = 0;
     while (file >> id) {
         PageNode node(id);
+        node.setIndex(inCount++);
 
         // Check if there is already a node for this page
         if (genArray[id].getPageID() != 0) {
@@ -43,9 +45,6 @@ int main(int argc, char** argv) {
         // Set the new node in place
         genArray[id] = node;
         mainArray.addPage(node);
-
-        // Increment the count
-        ++inCount;
     }
 
     std::cout << "Page Requests Expected: " << inCount << std::endl;
@@ -86,16 +85,33 @@ int main(int argc, char** argv) {
             ++lruPageFaults;
         }
 
-        std::cout << *frames << std::endl;
-
         ++lruPageRequests;
     }
+
+    // Clean up
+    delete frames;
+    mainArray.reset();
+
+    // Run Optimal
+    frames = new OptimalFrames(frameSize);
+    int optimalPageFaults = 0;
+    int optimalPageRequests = 0;
+    for (int i = 0; i < mainArray.getSize(); ++i) {
+        if (frames->add(mainArray.getNextPage())) {
+            ++optimalPageFaults;
+        }
+        ++optimalPageRequests;
+    }
+
+    // Clean up
     delete frames;
 
     std::cout << "FIFO Page Faults: " << fifoPageFaults << std::endl;
     std::cout << "FIFO Page Requests: " << fifoPageRequests << std::endl;
     std::cout << "LRU Page Faults: " << lruPageFaults << std::endl;
     std::cout << "LRU Page Requests: " << lruPageRequests << std::endl;
+    std::cout << "Optimal Page Faults: " << optimalPageFaults << std::endl;
+    std::cout << "Optimal Page Requests: " << optimalPageRequests << std::endl;
 
     return 0;
 }

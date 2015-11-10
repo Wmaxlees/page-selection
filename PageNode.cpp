@@ -33,3 +33,11 @@ void PageNode::setLastCalled(int time) {
 int PageNode::getLastCalled() {
     return this->m_LastCalled;
 }
+
+void PageNode::setIndex(int index) {
+    this->m_Index = index;
+}
+
+int PageNode::getIndex() {
+    return this->m_Index;
+}

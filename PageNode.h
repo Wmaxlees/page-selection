@@ -15,6 +15,9 @@ public:
     void setChild(PageNode *childNode);
     PageNode* getChild();
 
+    void setIndex(int index);
+    int getIndex();
+
     void setLastCalled(int time);
     int getLastCalled();
 
@@ -23,6 +26,7 @@ private:
     PageNode   *m_pChild;
     int         m_LastCalled;
     int         m_PageID;
+    int         m_Index;
 
 };
 
