@@ -10,6 +10,17 @@
 
 using namespace std;
 
+void outputResults();
+
+int fifoPageFaults;
+float fifoFaultRates[5];
+
+int lruPageFaults;
+float lruFaultRates[5];
+
+int optimalPageFaults;
+float optimalFaultRates[5];
+
 int main(int argc, char** argv) {
     // Read in the command line arguments
     if (argc < 4) {
@@ -57,13 +68,27 @@ int main(int argc, char** argv) {
 
     // Run FIFO first
     frames = new FIFOFrames(frameSize);
-    int fifoPageFaults = 0;
+    fifoPageFaults = 0;
     int fifoPageRequests = 0;
     for (int i = 0; i < mainArray.getSize(); ++i) {
         if (frames->add(mainArray.getNextPage())) {
             ++fifoPageFaults;
         }
         ++fifoPageRequests;
+
+        if (i == 999) {
+            fifoFaultRates[0] = (float)fifoPageFaults / 1000.;
+        } else if (i == 1999) {
+            fifoFaultRates[1] = (float)fifoPageFaults / 2000.;
+        } else if (i == 3999) {
+            fifoFaultRates[2] = (float)fifoPageFaults / 4000.;
+        } else if (i == 5999) {
+            fifoFaultRates[3] = (float)fifoPageFaults / 6000.;
+        } else if (i == 7999) {
+            fifoFaultRates[3] = (float)fifoPageFaults / 8000.;
+        } else if (i == 9999) {
+            fifoFaultRates[4] = (float)fifoPageFaults / 10000.;
+        }
     }
 
     // Clean up
@@ -72,7 +97,7 @@ int main(int argc, char** argv) {
 
     // Run LRU
     frames = new LRUFrames(frameSize);
-    int lruPageFaults = 0;
+    lruPageFaults = 0;
     int lruPageRequests = 0;
     int runtime;
     for (int i = 0; i < mainArray.getSize(); ++i) {
@@ -86,6 +111,20 @@ int main(int argc, char** argv) {
         }
 
         ++lruPageRequests;
+
+        if (i == 999) {
+            lruFaultRates[0] = (float)lruPageFaults / 1000.;
+        } else if (i == 1999) {
+            lruFaultRates[1] = (float)lruPageFaults / 2000.;
+        } else if (i == 3999) {
+            lruFaultRates[2] = (float)lruPageFaults / 4000.;
+        } else if (i == 5999) {
+            lruFaultRates[3] = (float)lruPageFaults / 6000.;
+        } else if (i == 7999) {
+            lruFaultRates[3] = (float)lruPageFaults / 8000.;
+        } else if (i == 9999) {
+            lruFaultRates[4] = (float)lruPageFaults / 10000.;
+        }
     }
 
     // Clean up
@@ -94,24 +133,59 @@ int main(int argc, char** argv) {
 
     // Run Optimal
     frames = new OptimalFrames(frameSize);
-    int optimalPageFaults = 0;
+    optimalPageFaults = 0;
     int optimalPageRequests = 0;
     for (int i = 0; i < mainArray.getSize(); ++i) {
         if (frames->add(mainArray.getNextPage())) {
             ++optimalPageFaults;
         }
         ++optimalPageRequests;
+
+        if (i == 999) {
+            optimalFaultRates[0] = (float)optimalPageFaults / 1000.;
+        } else if (i == 1999) {
+            optimalFaultRates[1] = (float)optimalPageFaults / 2000.;
+        } else if (i == 3999) {
+            optimalFaultRates[2] = (float)optimalPageFaults / 4000.;
+        } else if (i == 5999) {
+            optimalFaultRates[3] = (float)optimalPageFaults / 6000.;
+        } else if (i == 7999) {
+            optimalFaultRates[3] = (float)optimalPageFaults / 8000.;
+        } else if (i == 9999) {
+            optimalFaultRates[4] = (float)optimalPageFaults / 10000.;
+        }
     }
 
     // Clean up
     delete frames;
 
-    std::cout << "FIFO Page Faults: " << fifoPageFaults << std::endl;
-    std::cout << "FIFO Page Requests: " << fifoPageRequests << std::endl;
-    std::cout << "LRU Page Faults: " << lruPageFaults << std::endl;
-    std::cout << "LRU Page Requests: " << lruPageRequests << std::endl;
-    std::cout << "Optimal Page Faults: " << optimalPageFaults << std::endl;
-    std::cout << "Optimal Page Requests: " << optimalPageRequests << std::endl;
+    outputResults();
 
     return 0;
+}
+
+void outputResults() {
+    std::cout << std::setw(63) << "Page Fault Rates\n" 
+              << std::setw(12) << "Algorithm" << std::setw(20) << "Total Page Faults"
+              << std::setw(16) << 2000 << std::setw(10) << 4000 << std::setw(10) << 6000
+              << std::setw(10) << 8000 << std::setw(11) << 10000 << '\n'
+              << "---------------------------------------------------------------------------------------------\n"
+              << std::setw(12) << "FIFO" << std::setw(13) << fifoPageFaults
+              << std::setw(23) << fifoFaultRates[0]
+              << std::setw(10) << fifoFaultRates[1]
+              << std::setw(10) << fifoFaultRates[2]
+              << std::setw(10) << fifoFaultRates[3]
+              << std::setw(10) << fifoFaultRates[4] << '\n'
+              << std::setw(12) << "LRU" << std::setw(13) << lruPageFaults
+              << std::setw(23) << lruFaultRates[0]
+              << std::setw(10) << lruFaultRates[1]
+              << std::setw(10) << lruFaultRates[2]
+              << std::setw(10) << lruFaultRates[3]
+              << std::setw(10) << lruFaultRates[4] << '\n'
+              << std::setw(12) << "Optimal" << std::setw(13) << optimalPageFaults
+              << std::setw(23) << optimalFaultRates[0]
+              << std::setw(10) << optimalFaultRates[1]
+              << std::setw(10) << optimalFaultRates[2]
+              << std::setw(10) << optimalFaultRates[3]
+              << std::setw(10) << optimalFaultRates[4] << '\n';
 }
