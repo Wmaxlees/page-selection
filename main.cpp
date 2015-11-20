@@ -10,6 +10,8 @@
 
 using namespace std;
 
+char* outFilename;
+
 void outputResults();
 
 int fifoPageFaults;
@@ -35,6 +37,7 @@ int main(int argc, char** argv) {
     }
 
     int frameSize = stoi(argv[1]);
+    outFilename = argv[3];
 
     // Create the main arrays
     PageArray mainArray(10001);
@@ -58,7 +61,7 @@ int main(int argc, char** argv) {
         mainArray.addPage(node);
     }
 
-    std::cout << "Page Requests Expected: " << inCount << std::endl;
+    // std::cout << "Page Requests Expected: " << inCount << std::endl;
 
     // Delete unneeded array
     delete [] genArray;
@@ -165,27 +168,34 @@ int main(int argc, char** argv) {
 }
 
 void outputResults() {
-    std::cout << std::setw(63) << "Page Fault Rates\n" 
-              << std::setw(12) << "Algorithm" << std::setw(20) << "Total Page Faults"
-              << std::setw(16) << 2000 << std::setw(10) << 4000 << std::setw(10) << 6000
-              << std::setw(10) << 8000 << std::setw(11) << 10000 << '\n'
-              << "---------------------------------------------------------------------------------------------\n"
-              << std::setw(12) << "FIFO" << std::setw(13) << fifoPageFaults
-              << std::setw(23) << fifoFaultRates[0]
-              << std::setw(10) << fifoFaultRates[1]
-              << std::setw(10) << fifoFaultRates[2]
-              << std::setw(10) << fifoFaultRates[3]
-              << std::setw(10) << fifoFaultRates[4] << '\n'
-              << std::setw(12) << "LRU" << std::setw(13) << lruPageFaults
-              << std::setw(23) << lruFaultRates[0]
-              << std::setw(10) << lruFaultRates[1]
-              << std::setw(10) << lruFaultRates[2]
-              << std::setw(10) << lruFaultRates[3]
-              << std::setw(10) << lruFaultRates[4] << '\n'
-              << std::setw(12) << "Optimal" << std::setw(13) << optimalPageFaults
-              << std::setw(23) << optimalFaultRates[0]
-              << std::setw(10) << optimalFaultRates[1]
-              << std::setw(10) << optimalFaultRates[2]
-              << std::setw(10) << optimalFaultRates[3]
-              << std::setw(10) << optimalFaultRates[4] << '\n';
+    std::ofstream outFile(outFilename);
+
+    if (outFile) {
+
+        outFile   << std::setw(63) << "Page Fault Rates\n" 
+                  << std::setw(12) << "Algorithm" << std::setw(20) << "Total Page Faults"
+                  << std::setw(16) << 2000 << std::setw(10) << 4000 << std::setw(10) << 6000
+                  << std::setw(10) << 8000 << std::setw(11) << 10000 << '\n'
+                  << "---------------------------------------------------------------------------------------------\n"
+                  << std::setw(12) << "FIFO" << std::setw(13) << fifoPageFaults
+                  << std::setw(23) << fifoFaultRates[0]
+                  << std::setw(10) << fifoFaultRates[1]
+                  << std::setw(10) << fifoFaultRates[2]
+                  << std::setw(10) << fifoFaultRates[3]
+                  << std::setw(10) << fifoFaultRates[4] << '\n'
+                  << std::setw(12) << "LRU" << std::setw(13) << lruPageFaults
+                  << std::setw(23) << lruFaultRates[0]
+                  << std::setw(10) << lruFaultRates[1]
+                  << std::setw(10) << lruFaultRates[2]
+                  << std::setw(10) << lruFaultRates[3]
+                  << std::setw(10) << lruFaultRates[4] << '\n'
+                  << std::setw(12) << "Optimal" << std::setw(13) << optimalPageFaults
+                  << std::setw(23) << optimalFaultRates[0]
+                  << std::setw(10) << optimalFaultRates[1]
+                  << std::setw(10) << optimalFaultRates[2]
+                  << std::setw(10) << optimalFaultRates[3]
+                  << std::setw(10) << optimalFaultRates[4] << std::endl;
+    } else {
+        std::cout << "Error writing to file" << std::endl;
+    }
 }
