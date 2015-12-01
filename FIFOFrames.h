@@ -11,7 +11,7 @@ class FIFOFrames : public Frames {
 public:
     FIFOFrames(int capacity);
 
-    bool add(PageNode node);
+    bool add(PageNode *node);
 
 private:
     int m_LastFrame;

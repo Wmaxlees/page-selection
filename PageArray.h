@@ -12,8 +12,8 @@ public:
     PageArray(int capacity);
     ~PageArray();
 
-    void addPage(PageNode node);
-    PageNode getNextPage();
+    void addPage(PageNode *node);
+    PageNode *getNextPage();
 
     void reset();
 
@@ -24,7 +24,7 @@ private:
     int         m_Capacity;
     int         m_Current;
 
-    PageNode   *m_pPages;
+    PageNode  **m_pPages;
 };
 
 

@@ -41,19 +41,19 @@ int main(int argc, char** argv) {
 
     // Create the main arrays
     PageArray mainArray(10001);
-    PageNode *genArray = new PageNode[512];
+    PageNode **genArray = new PageNode*[10001];
 
     // Read the file in
     std::ifstream file(argv[2], std::ios_base::in);
     int id;
     int inCount = 0;
     while (file >> id) {
-        PageNode node(id);
-        node.setIndex(inCount++);
+        PageNode *node = new PageNode(id);
+        node->setIndex(inCount++);
 
         // Check if there is already a node for this page
-        if (genArray[id].getPageID() != 0) {
-            genArray[id].setChild(&node);
+        if (genArray[id] != nullptr) {
+            genArray[id]->setChild(node);
         }
 
         // Set the new node in place
@@ -63,76 +63,8 @@ int main(int argc, char** argv) {
 
     // std::cout << "Page Requests Expected: " << inCount << std::endl;
 
-    // Delete unneeded array
-    delete [] genArray;
-
     // Create the frames
     Frames *frames;
-
-    // Run FIFO first
-    frames = new FIFOFrames(frameSize);
-    fifoPageFaults = 0;
-    int fifoPageRequests = 0;
-    for (int i = 0; i < mainArray.getSize(); ++i) {
-        if (frames->add(mainArray.getNextPage())) {
-            ++fifoPageFaults;
-        }
-        ++fifoPageRequests;
-
-        if (i == 999) {
-            fifoFaultRates[0] = (float)fifoPageFaults / 1000.;
-        } else if (i == 1999) {
-            fifoFaultRates[1] = (float)fifoPageFaults / 2000.;
-        } else if (i == 3999) {
-            fifoFaultRates[2] = (float)fifoPageFaults / 4000.;
-        } else if (i == 5999) {
-            fifoFaultRates[3] = (float)fifoPageFaults / 6000.;
-        } else if (i == 7999) {
-            fifoFaultRates[3] = (float)fifoPageFaults / 8000.;
-        } else if (i == 9999) {
-            fifoFaultRates[4] = (float)fifoPageFaults / 10000.;
-        }
-    }
-
-    // Clean up
-    delete frames;
-    mainArray.reset();
-
-    // Run LRU
-    frames = new LRUFrames(frameSize);
-    lruPageFaults = 0;
-    int lruPageRequests = 0;
-    int runtime;
-    for (int i = 0; i < mainArray.getSize(); ++i) {
-        // Set runtime
-        PageNode node = mainArray.getNextPage();
-        node.setLastCalled(runtime++);
-
-        // Add the frame
-        if (frames->add(node)) {
-            ++lruPageFaults;
-        }
-
-        ++lruPageRequests;
-
-        if (i == 999) {
-            lruFaultRates[0] = (float)lruPageFaults / 1000.;
-        } else if (i == 1999) {
-            lruFaultRates[1] = (float)lruPageFaults / 2000.;
-        } else if (i == 3999) {
-            lruFaultRates[2] = (float)lruPageFaults / 4000.;
-        } else if (i == 5999) {
-            lruFaultRates[3] = (float)lruPageFaults / 6000.;
-        } else if (i == 7999) {
-            lruFaultRates[3] = (float)lruPageFaults / 8000.;
-        } else if (i == 9999) {
-            lruFaultRates[4] = (float)lruPageFaults / 10000.;
-        }
-    }
-
-    // Clean up
-    delete frames;
-    mainArray.reset();
 
     // Run Optimal
     frames = new OptimalFrames(frameSize);
@@ -159,8 +91,77 @@ int main(int argc, char** argv) {
         }
     }
 
+    mainArray.reset();
+
+    // Run FIFO first
+    frames = new FIFOFrames(frameSize);
+    fifoPageFaults = 0;
+    int fifoPageRequests = 0;
+    for (int i = 0; i < mainArray.getSize(); ++i) {
+        if (frames->add(mainArray.getNextPage())) {
+            ++fifoPageFaults;
+        }
+        ++fifoPageRequests;
+
+        if (i == 999) {
+            fifoFaultRates[0] = (float)fifoPageFaults / 1000.;
+        } else if (i == 1999) {
+            fifoFaultRates[1] = (float)fifoPageFaults / 2000.;
+        } else if (i == 3999) {
+            fifoFaultRates[2] = (float)fifoPageFaults / 4000.;
+        } else if (i == 5999) {
+            fifoFaultRates[3] = (float)fifoPageFaults / 6000.;
+        } else if (i == 7999) {
+            fifoFaultRates[3] = (float)fifoPageFaults / 8000.;
+        } else if (i == 9999) {
+            fifoFaultRates[4] = (float)fifoPageFaults / 10000.;
+        }
+    }
+
+    // std::cout << "FIFO DONE" << std::endl;
+
     // Clean up
-    delete frames;
+    // delete frames;
+    mainArray.reset();
+
+    // Run LRU
+    frames = new LRUFrames(frameSize);
+    lruPageFaults = 0;
+    int lruPageRequests = 0;
+    int runtime;
+    for (int i = 0; i < mainArray.getSize(); ++i) {
+        // Set runtime
+        PageNode *node = mainArray.getNextPage();
+        node->setLastCalled(runtime++);
+
+        // Add the frame
+        if (frames->add(node)) {
+            ++lruPageFaults;
+        }
+
+        ++lruPageRequests;
+
+        if (i == 999) {
+            lruFaultRates[0] = (float)lruPageFaults / 1000.;
+        } else if (i == 1999) {
+            lruFaultRates[1] = (float)lruPageFaults / 2000.;
+        } else if (i == 3999) {
+            lruFaultRates[2] = (float)lruPageFaults / 4000.;
+        } else if (i == 5999) {
+            lruFaultRates[3] = (float)lruPageFaults / 6000.;
+        } else if (i == 7999) {
+            lruFaultRates[3] = (float)lruPageFaults / 8000.;
+        } else if (i == 9999) {
+            lruFaultRates[4] = (float)lruPageFaults / 10000.;
+        }
+    }
+
+    // Clean up
+    // delete frames;
+    mainArray.reset();
+
+    // Clean up
+    // delete frames;
 
     outputResults();
 

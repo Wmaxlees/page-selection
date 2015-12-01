@@ -10,7 +10,7 @@
 class OptimalFrames : public Frames {
 public:
     OptimalFrames(int capacity);
-    bool add(PageNode node);
+    bool add(PageNode *node);
 };
 
 

@@ -5,7 +5,12 @@
 #include "Frames.h"
 
 Frames::Frames(int capacity) {
-    this->m_pFrames = new PageNode[capacity];
+    this->m_pFrames = new PageNode*[capacity];
+
+    for (int i = 0; i < capacity; ++i) {
+        this->m_pFrames[i] = nullptr;
+    }
+    
     this->m_Capacity = capacity;
 }
 
@@ -19,7 +24,7 @@ std::ostream& operator<<(std::ostream& os, const Frames& frames) {
     // Print the row of numbers
 
     for (int i = 0; i < frames.m_Capacity; ++i) {
-        os << "|" << std::setw(4) << frames.m_pFrames[i].getPageID();
+        os << "|" << std::setw(4) << frames.m_pFrames[i]->getPageID();
     }
     os << "|\n";
 

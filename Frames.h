@@ -12,11 +12,11 @@
 class Frames {
 public:
     Frames(int capacity);
-    virtual bool add(PageNode node) = 0;
+    virtual bool add(PageNode *node) = 0;
 
     friend std::ostream& operator<<(std::ostream& os, const Frames& process);
 protected:
-    PageNode   *m_pFrames;
+    PageNode  **m_pFrames;
     int         m_Capacity;
 };
 

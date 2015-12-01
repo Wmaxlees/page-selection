@@ -3,10 +3,12 @@
 //
 
 #include "PageNode.h"
+#include <iostream>
 
 PageNode::PageNode() {
     this->m_LastCalled = 0;
     this->m_PageID = 0;
+    this->m_pChild = nullptr;
 }
 
 PageNode::PageNode(int pageID) {
@@ -19,6 +21,7 @@ int PageNode::getPageID() {
 }
 
 void PageNode::setChild(PageNode *childNode) {
+    // std::cout << "Child: " << childNode << std::endl;
     this->m_pChild = childNode;
 }
 

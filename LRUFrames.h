@@ -10,7 +10,7 @@
 class LRUFrames : public Frames {
 public:
     LRUFrames(int capacity);
-    bool add(PageNode node);
+    bool add(PageNode *node);
 };
 
 
